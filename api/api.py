@@ -1,6 +1,8 @@
 import mysql.connector
+
+import uvicorn
 from mysql.connector import errorcode
-from fastapi import FastAPI
+from fastapi import FastAPI , File, UploadFile
 import uvicorn  
 from pydantic import BaseModel
 mydb = mysql.connector.connect(host="localhost",port="3306" ,  user="root",  password="admin")
@@ -20,7 +22,9 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile):
+    return {"filename": file.filename}
 #@app.post("/users")
 
 
