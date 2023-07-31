@@ -8,11 +8,10 @@ from pydantic import BaseModel
 mydb = mysql.connector.connect(host="localhost",port="3306" ,  user="root",  password="admin")
 cursor = mydb.cursor()
 
-class Item(BaseModel):
-    name: str
-    description: str 
-    price: float
-    tax: float 
+class User(BaseModel):
+    username: str
+    email: str 
+    avatar: str
 
 
 app = FastAPI()
@@ -22,9 +21,10 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile):
-    return {"filename": file.filename}
+@app.post("/users")
+async def add_user(user: User):
+    print (user)
+    return {"name":user.username}
 #@app.post("/users")
 
 
