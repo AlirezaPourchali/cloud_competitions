@@ -83,7 +83,7 @@ diagnosticMode:
 ## @param image.debug Specify if debug logs should be enabled
 ##
 image:
-  registry: docker.iranrepo.ir
+  registry: docker.io
   repository: bitnami/mysql
   tag: 8.0.34-debian-11-r8
   digest: ""
@@ -102,7 +102,7 @@ image:
   ## Set to true if you would like to see extra information on logs
   ## It turns BASH and/or NAMI debugging in the image
   ##
-  debug: true
+  debug: false
 ## @param architecture MySQL architecture (`standalone` or `replication`)
 ##
 architecture: replication
@@ -112,7 +112,7 @@ auth:
   ## @param auth.rootPassword Password for the `root` user. Ignored if existing secret is provided
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mysql#setting-the-root-password-on-first-run
   ##
-  rootPassword: ""
+  rootPassword: "admin123"
   ## @param auth.createDatabase Whether to create the .Values.auth.database or not
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mysql#creating-a-database-on-first-run
   ##
@@ -442,7 +442,7 @@ primary:
       - ReadWriteOnce
     ## @param primary.persistence.size MySQL primary persistent volume size
     ##
-    size: 8Gi
+    size: 1Gi
     ## @param primary.persistence.selector Selector to match an existing Persistent Volume
     ## selector:
     ##   matchLabels:
@@ -547,7 +547,7 @@ secondary:
   name: secondary
   ## @param secondary.replicaCount Number of MySQL secondary replicas
   ##
-  replicaCount: 1
+  replicaCount: 2
   ## @param secondary.hostAliases Deployment pod host aliases
   ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
   ##
@@ -821,7 +821,7 @@ secondary:
       - ReadWriteOnce
     ## @param secondary.persistence.size MySQL secondary persistent volume size
     ##
-    size: 8Gi
+    size: 1Gi
     ## @param secondary.persistence.selector Selector to match an existing Persistent Volume
     ## selector:
     ##   matchLabels:
