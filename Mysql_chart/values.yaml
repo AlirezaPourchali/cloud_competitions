@@ -83,9 +83,9 @@ diagnosticMode:
 ## @param image.debug Specify if debug logs should be enabled
 ##
 image:
-  registry: docker.io
+  registry: docker.iranrepo.ir
   repository: bitnami/mysql
-  tag: 8.0.34-debian-11-r8
+  tag: 8.0.34-debian-11-r31
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -162,6 +162,18 @@ initdbScripts: {}
 ## @param initdbScriptsConfigMap ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)
 ##
 initdbScriptsConfigMap: ""
+## @param startdbScripts Dictionary of startdb scripts
+## Specify dictionary of scripts to be run every time the container is started
+## Example:
+## startdbScripts:
+##   my_start_script.sh: |
+##      #!/bin/bash
+##      echo "Do something."
+##
+startdbScripts: {}
+## @param startdbScriptsConfigMap ConfigMap with the startdb scripts (Note: Overrides `startdbScripts`)
+##
+startdbScriptsConfigMap: ""
 
 ## @section MySQL Primary parameters
 ##
@@ -442,7 +454,7 @@ primary:
       - ReadWriteOnce
     ## @param primary.persistence.size MySQL primary persistent volume size
     ##
-    size: 1Gi
+    size: 8Gi
     ## @param primary.persistence.selector Selector to match an existing Persistent Volume
     ## selector:
     ##   matchLabels:
@@ -547,7 +559,7 @@ secondary:
   name: secondary
   ## @param secondary.replicaCount Number of MySQL secondary replicas
   ##
-  replicaCount: 2
+  replicaCount: 1
   ## @param secondary.hostAliases Deployment pod host aliases
   ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
   ##
@@ -821,7 +833,7 @@ secondary:
       - ReadWriteOnce
     ## @param secondary.persistence.size MySQL secondary persistent volume size
     ##
-    size: 1Gi
+    size: 8Gi
     ## @param secondary.persistence.selector Selector to match an existing Persistent Volume
     ## selector:
     ##   matchLabels:
@@ -1009,7 +1021,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/os-shell
-    tag: 11-debian-11-r16
+    tag: 11-debian-11-r43
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -1043,7 +1055,7 @@ metrics:
   image:
     registry: docker.io
     repository: bitnami/mysqld-exporter
-    tag: 0.15.0-debian-11-r0
+    tag: 0.15.0-debian-11-r24
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
