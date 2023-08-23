@@ -5,25 +5,29 @@ from fastapi import FastAPI , File, UploadFile
 import uvicorn  
 from pydantic import BaseModel
 
+#from sqlalchemy.orm import sessionmaker
+#SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 username = "root"
-password = "admin"
+password = "1"
 hostname = "localhost:3306"  # or your MySQL server address
 database_name = "my_database"
 
 #db_url = f"mysql+mysqlconnector://{username}:{password}@{hostname}/{database_name}"
-db_url = "mysql+mysqlconnector://root:admin123@localhost:3306/my_database"
+db_url = "mysql+mysqlconnector://root:1@localhost:3306/my_database"
 engine = create_engine(db_url)
 mysql = engine.connect()
 try:
-    mysql.execute(text("create table hello ( username varchar(255) , email varchar(255) , avatar varchar(255) )"))
+    mysql.execute(text("create table hello (id int auto_increment primary key , username varchar(255) , email varchar(255) , avatar varchar(255) )"))
 except Exception as e:
         print ("already exists")
-
+mysql.close()
 ## SEE TABLES AND DBS WITH INSPECTOR
 
 #inspector = inspect(mysql)
 #print(inspector.get_schema_names())
 #print(inspector.get_table_names())
+
 
 ## EXECUTE COMMANDS DIRECTLY 
 
@@ -52,10 +56,20 @@ async def add_user(user: User):
     query = text("insert into hello (username , email , avatar) values (:username , :email , :avatar)")
     param = {"username": username, "email": email, "avatar": avatar}
     result = mysql.execute(query , param)
+    print(result.lastrowid)
+    mysql.commit()
     mysql.close()
-    print(result)
-    return 200
-#@app.post("/users")
+    result.close()
+    return {"user_id": f"{result.lastrowid}"}
+
+
+@app.get("/users/{id}")
+async def get_user(id):
+    mysql = engine.connect()
+    query = text(f"select username , email from hello where id = {id}")
+    result = mysql.execute(query).fetchall()
+    return {"username": f"{result[0][0]}" , "email": f"{result[0][1]}" }
+
 
 
 #print(cursor.execute("create database ali"))
