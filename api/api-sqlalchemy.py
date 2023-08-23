@@ -1,7 +1,7 @@
-from sqlalchemy import create_engine, inspect ,text , exc
-
+from sqlalchemy import create_engine,text 
+import wget , os
 import uvicorn
-from fastapi import FastAPI , File, UploadFile
+from fastapi import FastAPI 
 import uvicorn  
 from pydantic import BaseModel
 
@@ -12,6 +12,7 @@ username = "root"
 password = "1"
 hostname = "localhost:3306"  # or your MySQL server address
 database_name = "my_database"
+storage = "."
 
 #db_url = f"mysql+mysqlconnector://{username}:{password}@{hostname}/{database_name}"
 db_url = "mysql+mysqlconnector://root:1@localhost:3306/my_database"
@@ -53,14 +54,25 @@ async def add_user(user: User):
     username = user.username
     email = user.email
     avatar = user.avatar
+
+
+      
     query = text("insert into hello (username , email , avatar) values (:username , :email , :avatar)")
     param = {"username": username, "email": email, "avatar": avatar}
     result = mysql.execute(query , param)
-    print(result.lastrowid)
+    id = result.lastrowid
     mysql.commit()
     mysql.close()
     result.close()
-    return {"user_id": f"{result.lastrowid}"}
+    # dl
+    try:
+        wget.download(avatar , out=f"{storage}/{id}.jpg")
+    except Exception as e:
+        return e
+
+    return {"user_id": f"{id}"}
+
+
 
 
 @app.get("/users/{id}")
@@ -71,6 +83,10 @@ async def get_user(id):
     return {"username": f"{result[0][0]}" , "email": f"{result[0][1]}" }
 
 
+@app.get("/avatar/{id}")
+async def get_user(id):
+    with open(f"{storage}/{id}.jpg" , mode="rb") as f:
+        return f.read()
 
 #print(cursor.execute("create database ali"))
 #print(cursor.execute("show databases"))
