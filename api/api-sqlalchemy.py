@@ -79,10 +79,12 @@ async def add_user(user: User):
 @app.get("/users/{id}")
 async def get_user(id):
     mysql = engine.connect()
-    query = text(f"select username , email from hello where id = {id}")
-    result = mysql.execute(query).fetchall()
-    return {"username": f"{result[0][0]}" , "email": f"{result[0][1]}" }
-
+    try: 
+        query = text(f"select username , email from hello where id = {id}")
+        result = mysql.execute(query).fetchall()
+        return {"username": f"{result[0][0]}" , "email": f"{result[0][1]}" }
+    except Exception as e :
+        return e
 
 @app.get("/avatar/{id}")
 async def get_user(id):
