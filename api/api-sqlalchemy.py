@@ -2,6 +2,7 @@ from sqlalchemy import create_engine,text
 import wget , os
 import uvicorn
 from fastapi import FastAPI 
+from fastapi.responses import FileResponse
 import uvicorn  
 from pydantic import BaseModel
 
@@ -85,8 +86,7 @@ async def get_user(id):
 
 @app.get("/avatar/{id}")
 async def get_user(id):
-    with open(f"{storage}/{id}.jpg" , mode="rb") as f:
-        return f.read()
+    return FileResponse(f"{storage}/{id}.jpg")
 
 #print(cursor.execute("create database ali"))
 #print(cursor.execute("show databases"))
