@@ -9,18 +9,20 @@ from pydantic import BaseModel
 #from sqlalchemy.orm import sessionmaker
 #SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-username = "root"
-password = "1"
-hostname = "localhost:3306"  # or your MySQL server address
-database_name = "my_database"
-storage = "."
 
+username = os.environ["MYSQL_USERNAME"]
+password = os.environ["MYSQL_PASSWORD"]
+hostname = os.environ["MYSQL_URL"]  # or your MySQL server address
+port = os.environ["MYSQL_PORT"]
+database_name = os.environ["MYSQL_DB"]
+storage = os.environ["MYSQL_FILESYSTEM"]
+table = os.environ["MYSQL_TABLE"]
 #db_url = f"mysql+mysqlconnector://{username}:{password}@{hostname}/{database_name}"
-db_url = "mysql+mysqlconnector://root:1@localhost:3306/my_database"
+db_url = f"mysql+mysqlconnector://{username}:{password}@{hostname}:{port}/{database_name}"
 engine = create_engine(db_url)
 mysql = engine.connect()
 try:
-    mysql.execute(text("create table hello (id int auto_increment primary key , username varchar(255) , email varchar(255) , avatar varchar(255) )"))
+    mysql.execute(text(f"create table {table} (id varchar(40) primary key , username varchar(255) , email varchar(255) , avatar varchar(255) )"))
 except Exception as e:
         print ("already exists")
 mysql.close()
@@ -56,12 +58,14 @@ async def add_user(user: User):
     email = user.email
     avatar = user.avatar
 
-
-      
-    query = text("insert into hello (username , email , avatar) values (:username , :email , :avatar)")
-    param = {"username": username, "email": email, "avatar": avatar}
+    # or set @var = uuid();
+    uuid = mysql.execute(text("select uuid()")).fetchall()
+    id = uuid[0][0]
+    
+    query = text("insert into hello (id , username , email , avatar) values (:id, :username , :email , :avatar)")
+    param = {"id":id , "username": username, "email": email, "avatar": avatar}
     result = mysql.execute(query , param)
-    id = result.lastrowid
+    #id = result.lastrowid
     mysql.commit()
     mysql.close()
     result.close()

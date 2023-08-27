@@ -1,0 +1,10 @@
+FROM docker.iranrepo.ir/python:alpine
+
+RUN mkdir /app
+
+COPY requirements.txt /app
+RUN pip install -r /app/requirements.txt
+
+COPY api-sqlalchemy.py /app
+
+CMD ["python3" , "-u" , "api-sqlalchemy.py"]
