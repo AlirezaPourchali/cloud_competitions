@@ -62,7 +62,7 @@ async def add_user(user: User):
     uuid = mysql.execute(text("select uuid()")).fetchall()
     id = uuid[0][0]
     
-    query = text("insert into hello (id , username , email , avatar) values (:id, :username , :email , :avatar)")
+    query = text(f"insert into {table} (id , username , email , avatar) values (:id, :username , :email , :avatar)")
     param = {"id":id , "username": username, "email": email, "avatar": avatar}
     result = mysql.execute(query , param)
     #id = result.lastrowid
@@ -84,7 +84,7 @@ async def add_user(user: User):
 async def get_user(id):
     mysql = engine.connect()
     try: 
-        query = text(f"select username , email from hello where id = {id}")
+        query = text(f"select username , email from {table} where id = {id}")
         result = mysql.execute(query).fetchall()
         return {"username": f"{result[0][0]}" , "email": f"{result[0][1]}" }
     except Exception as e :
