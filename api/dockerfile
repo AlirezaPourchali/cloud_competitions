@@ -7,4 +7,7 @@ RUN pip install -r /app/requirements.txt
 
 COPY api-sqlalchemy.py /app
 
-CMD ["python3" , "-u" , "api-sqlalchemy.py"]
+WORKDIR /app
+EXPOSE 8000
+
+CMD [ "uvicorn" , "--host" , "0.0.0.0" ,"api-sqlalchemy:app" , "--reload"]
