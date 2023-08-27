@@ -10,13 +10,13 @@ from pydantic import BaseModel
 #SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-username = os.environ["MYSQL_USERNAME"]
-password = os.environ["MYSQL_PASSWORD"]
-hostname = os.environ["MYSQL_URL"]  # or your MySQL server address
-port = os.environ["MYSQL_PORT"]
-database_name = os.environ["MYSQL_DB"]
-storage = os.environ["MYSQL_FILESYSTEM"]
-table = os.environ["MYSQL_TABLE"]
+username = os.environ["API_MYSQL_USERNAME"]
+password = os.environ["API_MYSQL_PASSWORD"]
+hostname = os.environ["API_MYSQL_URL"]  # or your MySQL server address
+port = os.environ["API_MYSQL_PORT"]
+database_name = os.environ["API_MYSQL_DB"]
+storage = os.environ["API_MYSQL_FILESYSTEM"]
+table = os.environ["API_MYSQL_TABLE"]
 #db_url = f"mysql+mysqlconnector://{username}:{password}@{hostname}/{database_name}"
 db_url = f"mysql+mysqlconnector://{username}:{password}@{hostname}:{port}/{database_name}"
 engine = create_engine(db_url)
@@ -84,7 +84,7 @@ async def add_user(user: User):
 async def get_user(id):
     mysql = engine.connect()
     try: 
-        query = text(f"select username , email from {table} where id = {id}")
+        query = text(f"select username , email from {table} where id = \"{id}\"")
         result = mysql.execute(query).fetchall()
         return {"username": f"{result[0][0]}" , "email": f"{result[0][1]}" }
     except Exception as e :
@@ -100,5 +100,5 @@ async def get_user(id):
 #for x in cursor:
 #  print(x)
 
-if __name__ =="__main__":
-    uvicorn.run('api-sqlalchemy:app' , host='0.0.0.0' , port=8000 , reload=True )
+#if __name__ =="__main__":
+#    uvicorn.run('api-sqlalchemy:app' , host='0.0.0.0' , port=8000 , reload=True )
