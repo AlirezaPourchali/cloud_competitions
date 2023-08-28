@@ -1,0 +1,13 @@
+FROM docker.iranrepo.ir/python:alpine
+
+RUN mkdir /app
+
+COPY requirements.txt /app
+RUN pip install -r /app/requirements.txt
+
+COPY api-sqlalchemy.py /app
+
+WORKDIR /app
+EXPOSE 8000
+
+CMD [ "uvicorn" , "--host" , "0.0.0.0" ,"api-sqlalchemy:app" , "--reload"]
